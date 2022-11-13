@@ -7,9 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Car {
-    public int serialNumber;
-    public String brand;
-    public String model;
-    public String year;
-    public String engine;
+    private int serialNumber;
+    private String brand;
+    private String model;
+    private String year;
+    private String engine;
 }

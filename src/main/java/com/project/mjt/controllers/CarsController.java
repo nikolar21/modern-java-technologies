@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/cars")
 public class CarsController {
 
     int serialNumber = 101010;
     List<Car> cars = new ArrayList<>();
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<Car>> getAllCars() {
         return ResponseEntity.ok(this.cars);
     }
@@ -24,7 +25,7 @@ public class CarsController {
     @GetMapping("/{serialNumber}")
     public ResponseEntity<List<Car>> getCarById(@PathVariable("serialNumber") int number) {
         List<Car> response = this.cars.stream()
-                .filter(result -> result.serialNumber == number)
+                .filter(result -> result.getSerialNumber() == number)
                 .collect(Collectors.toList());
 
         if (response.size() == 0) {
@@ -35,9 +36,28 @@ public class CarsController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<Car> addCar(@RequestBody() Car car) {
         car.setSerialNumber(++serialNumber);
+        this.cars.add(car);
+
+        return new ResponseEntity<>(car, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{serialNumber}")
+    public ResponseEntity<Car> updateCar(@PathVariable("serialNumber") int number, @RequestBody() Car car) {
+        Car foundCar = this.cars.stream()
+                .filter(result -> result.getSerialNumber() == number)
+                .findFirst()
+                .orElse(null);
+
+        if (foundCar == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("Car with a serial number: %d is not found", number));
+        }
+
+        car.setSerialNumber(foundCar.getSerialNumber());
+        this.cars.remove(foundCar);
         this.cars.add(car);
 
         return new ResponseEntity<>(car, HttpStatus.CREATED);
@@ -46,7 +66,7 @@ public class CarsController {
     @DeleteMapping("/{serialNumber}")
     public ResponseEntity<Void> deleteCarById(@PathVariable("serialNumber") int number) {
         List<Car> response = this.cars.stream()
-                .filter(result -> result.serialNumber == number)
+                .filter(result -> result.getSerialNumber() == number)
                 .collect(Collectors.toList());
 
         if (response.size() == 0) {
