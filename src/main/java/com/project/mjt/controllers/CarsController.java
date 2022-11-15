@@ -1,88 +1,43 @@
 package com.project.mjt.controllers;
 
 import com.project.mjt.models.Car;
+import com.project.mjt.services.CarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cars")
 public class CarsController {
 
-    int serialNumber = 101010;
-    List<Car> cars = new ArrayList<>();
+    @Autowired
+    private CarService carService;
 
     @GetMapping()
     public ResponseEntity<List<Car>> getAllCars() {
-        return ResponseEntity.ok(this.cars);
+        return ResponseEntity.ok(carService.getAllCars());
     }
 
     @GetMapping("/{serialNumber}")
-    public ResponseEntity<List<Car>> getCarById(@PathVariable("serialNumber") int number) {
-        List<Car> response = this.cars.stream()
-                .filter(result -> result.getSerialNumber() == number)
-                .collect(Collectors.toList());
-
-        if (response.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", number));
-        }
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Car> getCarById(@PathVariable("serialNumber") int number) {
+        return ResponseEntity.ok(carService.getCarBySerialNumber(number));
     }
 
     @PostMapping()
     public ResponseEntity<Car> addCar(@RequestBody() Car car) {
-        car.setSerialNumber(++serialNumber);
-        this.cars.add(car);
-
-        return new ResponseEntity<>(car, HttpStatus.CREATED);
+        return new ResponseEntity<>(carService.addNewCar(car), HttpStatus.CREATED);
     }
 
     @PutMapping("/{serialNumber}")
     public ResponseEntity<Car> updateCar(@PathVariable("serialNumber") int number, @RequestBody() Car car) {
-        Car foundCar = this.cars.stream()
-                .filter(result -> result.getSerialNumber() == number)
-                .findFirst()
-                .orElse(null);
-
-        if (foundCar == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", number));
-        }
-
-        car.setSerialNumber(foundCar.getSerialNumber());
-        this.cars.remove(foundCar);
-        this.cars.add(car);
-
-        return new ResponseEntity<>(car, HttpStatus.CREATED);
+        return new ResponseEntity<>(carService.updateCar(number, car), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{serialNumber}")
-    public ResponseEntity<Void> deleteCarById(@PathVariable("serialNumber") int number) {
-        List<Car> response = this.cars.stream()
-                .filter(result -> result.getSerialNumber() == number)
-                .collect(Collectors.toList());
-
-        if (response.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", number));
-        }
-
-        Car car = response.get(0);
-
-        if (car == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", number));
-        }
-
-        this.cars.remove(car);
-
-        return null;
+    public void deleteCarById(@PathVariable("serialNumber") int number) {
+        carService.deleteCarById(number);
     }
 }
