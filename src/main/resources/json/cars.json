@@ -1,0 +1,23 @@
+[
+  {
+    "serialNumber": 1000001,
+    "brand": "Mercedes",
+    "model": "ML320",
+    "year": 2015,
+    "engine": "3.0 224hp"
+  },
+  {
+    "serialNumber": 1000002,
+    "brand": "Peugeot",
+    "model": "407",
+    "year": 2008,
+    "engine": "2.2 HDi"
+  },
+  {
+    "serialNumber": 1000003,
+    "brand": "VW",
+    "model": "Passat",
+    "year": 2008,
+    "engine": "2.0 TDI"
+  }
+]
