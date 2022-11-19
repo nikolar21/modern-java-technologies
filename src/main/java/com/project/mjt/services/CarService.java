@@ -1,81 +1,34 @@
+/*
+ * Copyright (c) 2022 VMware, Inc. All rights reserved. VMware Confidential
+ */
 package com.project.mjt.services;
 
-import com.project.mjt.models.Car;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service
-public class CarService {
+import org.springframework.beans.factory.annotation.Autowired;
 
-    int serialNumber = 101010;
-    List<Car> cars = new ArrayList<>();
+import com.project.mjt.dto.CarDTO;
+import com.project.mjt.exception.CarDeletionException;
+import com.project.mjt.exception.CarNotFoundException;
+import com.project.mjt.exception.CarStoringException;
+import com.project.mjt.exception.CarUpdatingException;
 
-    public List<Car> getAllCars() {
-        return this.cars;
-    }
+public interface CarService {
 
-    public Car getCarBySerialNumber(int serialNumber) {
-        List<Car> response = this.cars.stream()
-                .filter(result -> result.getSerialNumber() == serialNumber)
-                .collect(Collectors.toList());
+    List<CarDTO> getAllCars();
 
-        if (response.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", serialNumber));
-        }
+    List<CarDTO> getCars(String serialNumber,
+                         String model,
+                         String brand,
+                         String afterYear,
+                         String beforeYear,
+                         String color) throws CarNotFoundException;
 
-        return response.get(0);
-    }
+    CarDTO getCarBySerialNumber(int serialNumber) throws CarNotFoundException;
 
-    public Car addNewCar(Car car) {
-        car.setSerialNumber(++serialNumber);
-        this.cars.add(car);
+    CarDTO addNewCar(CarDTO car) throws CarStoringException;
 
-        return car;
-    }
+    CarDTO updateCar(String serialNumber, CarDTO carUpdateDTO) throws CarNotFoundException, CarUpdatingException;
 
-    public Car updateCar(int serialNumber, Car car) {
-        Car foundCar = this.cars.stream()
-                .filter(result -> result.getSerialNumber() == serialNumber)
-                .findFirst()
-                .orElse(null);
-
-        if (foundCar == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", serialNumber));
-        }
-
-        car.setSerialNumber(foundCar.getSerialNumber());
-        this.cars.remove(foundCar);
-        this.cars.add(car);
-
-        return car;
-
-    }
-
-    public void deleteCarById(int serialNumber) {
-        List<Car> response = this.cars.stream()
-                .filter(result -> result.getSerialNumber() == serialNumber)
-                .collect(Collectors.toList());
-
-        if (response.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", serialNumber));
-        }
-
-        Car car = response.get(0);
-
-        if (car == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("Car with a serial number: %d is not found", serialNumber));
-        }
-
-        this.cars.remove(car);
-
-    }
+    CarDTO deleteCarById(String serialNumber) throws CarNotFoundException, CarDeletionException;
 }
