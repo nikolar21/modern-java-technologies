@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.models.Car;
 import com.project.mjt.repository.CarRepository;
 
@@ -32,14 +33,7 @@ public class CarRepositoryImpl implements CarRepository {
 
     public CarRepositoryImpl() throws IOException {
 
-        File dataFile = new File(DATA_FILE_NAME);
-
-        // TODO: Refactor
-        List<Car> loadedCars = mapper.readValue(dataFile, new TypeReference<List<Car>>() {});
-        Optional<Car> maxSerialNumberCar = loadedCars.stream().max(Comparator.comparing(Car::getSerialNumber));
-        serialNumber = maxSerialNumberCar.get().getSerialNumber();
-
-        allCars.addAll(loadedCars);
+        loadData();
     }
 
     @Override
@@ -58,13 +52,14 @@ public class CarRepositoryImpl implements CarRepository {
     }
 
     @Override
-    public void updateCar(Car carToUpdate) {
-        int index;
-        // TODO: Refactor this
-        for(index = 0; index < allCars.size(); index++) {
-            if (allCars.get(index).getSerialNumber().equals(carToUpdate.getSerialNumber()))
-                allCars.set(index, carToUpdate);
-        }
+    public void updateCar(int serial, Car carUpdate) throws CarNotFoundException {
+
+        Optional<Car> carToUpdate = getCarBySerial(serial);
+        if (carToUpdate.isEmpty())
+            throw new CarNotFoundException(serial);
+
+        int indexOfCarToUpdate = allCars.indexOf(carToUpdate.get());
+        allCars.set(indexOfCarToUpdate, carUpdate);
     }
 
     @Override
@@ -77,9 +72,21 @@ public class CarRepositoryImpl implements CarRepository {
         return ++serialNumber;
     }
 
+
+
     @Override
-    public void saveJSON() throws IOException {
+    public void saveData() throws IOException {
         File dataFile = new File(EXPORTED_DATA_FILE_NAME);
         mapper.writeValue(dataFile, allCars);
+    }
+
+    private void loadData() throws IOException {
+
+        File dataFile = new File(DATA_FILE_NAME);
+        List<Car> loadedCars = mapper.readValue(dataFile, new TypeReference<List<Car>>() {});
+        Optional<Car> maxSerialNumberCar = loadedCars.stream().max(Comparator.comparing(Car::getSerialNumber));
+        serialNumber = maxSerialNumberCar.get().getSerialNumber();
+
+        allCars.addAll(loadedCars);
     }
 }

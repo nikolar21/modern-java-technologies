@@ -6,7 +6,7 @@ import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.exception.CarStoringException;
 import com.project.mjt.exception.CarUpdatingException;
 import com.project.mjt.exception.DataSaveException;
-import com.project.mjt.services.impl.CarServiceImpl;
+import com.project.mjt.services.CarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,21 +22,16 @@ import lombok.SneakyThrows;
 @CrossOrigin("http://localhost:4200/")
 public class CarsController {
 
-    private final CarServiceImpl carService;
+    private final CarService carService;
 
     @Autowired
-    public CarsController(CarServiceImpl carService) {
+    public CarsController(CarService carService) {
         this.carService = carService;
     }
 
     // ---------------
     // CRUD OPERATIONS
     // ---------------
-
-//    @GetMapping()
-//    public ResponseEntity<List<CarDTO>> getAllCars() {
-//        return ResponseEntity.ok(carService.getAllCars());
-//    }
 
     @SneakyThrows
     @GetMapping("/{serialNumber}")

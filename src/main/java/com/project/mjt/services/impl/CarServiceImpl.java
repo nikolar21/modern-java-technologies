@@ -1,10 +1,8 @@
 package com.project.mjt.services.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,6 +46,8 @@ public class CarServiceImpl implements CarService {
         if (cars.isEmpty())
             return Collections.emptyList();
 
+        // TODO: Move filtering to the repository layer when a DB is implemented, to avoid unnecessary load on the
+        //       repository layer (and the database)
         if (serialNumber != null) {
             int serialNumberInt = Integer.parseInt(serialNumber);
 
@@ -86,11 +86,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDTO getCarBySerialNumber(int serialNumber) throws CarNotFoundException {
 
-        List<Car> cars = carRepository.getCars();
-        Optional<Car> foundCar = cars.stream().filter(car -> car.getSerialNumber().equals(serialNumber)).findFirst();
+        Optional<Car> foundCar = carRepository.getCarBySerial(serialNumber);
 
         if (foundCar.isEmpty())
-            throw new CarNotFoundException(String.format("CarDTO with a serial number: %d is not found", serialNumber));
+            throw new CarNotFoundException(serialNumber);
 
         return carMapper.toDTO(foundCar.get());
     }
@@ -98,7 +97,10 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDTO addNewCar(CarDTO car) throws CarStoringException {
 
+        // Retrieve serial number from the repository, which is responsible for keeping track of the serial number
         car.setSerialNumber(carRepository.getSerialNumber());
+
+        // Map DTO object from the controller to an entity object
         Car newCar = carMapper.toEntity(car);
 
         euroLevelService.setEngineStandards(newCar);
@@ -119,20 +121,29 @@ public class CarServiceImpl implements CarService {
         // TODO: Validate if number is in integer range
         int serialNumberInt = Integer.parseInt(serialNumber);
 
-        CarDTO carToBeUpdated = getCarBySerialNumber(serialNumberInt);
-        carUpdateDTO.setSerialNumber(carToBeUpdated.getSerialNumber());
+        // Validate that car is available
+        Optional<Car> carToBeUpdated = carRepository.getCarBySerial(serialNumberInt);
+        if (carToBeUpdated.isEmpty())
+            throw new CarNotFoundException(serialNumberInt);
 
+        // Map front-end DTO object to entity
         Car carUpdate = carMapper.toEntity(carUpdateDTO);
 
-        carRepository.updateCar(carUpdate);
+        // Validate that the client did not change the serial number
+        carUpdate.setSerialNumber(carToBeUpdated.get().getSerialNumber());
 
-        CarDTO updatedCar = getCarBySerialNumber(serialNumberInt);
-        if (!updatedCar.equals(carUpdateDTO)) {
+        euroLevelService.setEngineStandards(carUpdate);
+
+        carRepository.updateCar(serialNumberInt, carUpdate);
+
+        // Validate that an update was performed correctly
+        Optional<Car> updatedCar = carRepository.getCarBySerial(serialNumberInt);
+        if (updatedCar.isEmpty() || !updatedCar.get().equals(carUpdate)) {
             throw new CarUpdatingException(
                 String.format("Error occurred while trying to update car with serial number %d.", serialNumberInt));
         }
 
-        return updatedCar;
+        return carMapper.toDTO(updatedCar.get());
     }
 
     @Override
@@ -154,7 +165,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void saveCarData() throws DataSaveException {
         try {
-            carRepository.saveJSON();
+            carRepository.saveData();
         } catch (IOException e) {
             throw new DataSaveException("Could not save data to JSON file.");
         }
