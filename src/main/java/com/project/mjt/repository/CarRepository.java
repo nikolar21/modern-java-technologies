@@ -3,13 +3,17 @@
  */
 package com.project.mjt.repository;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import com.project.mjt.models.Car;
 
 public interface CarRepository {
 
     List<Car> getCars();
+
+    Optional<Car> getCarBySerial(int serialNumber);
 
     void createCar(Car car);
 
@@ -18,4 +22,6 @@ public interface CarRepository {
     void deleteCar(Car car);
 
     int getSerialNumber();
+
+    void saveJSON() throws IOException;
 }

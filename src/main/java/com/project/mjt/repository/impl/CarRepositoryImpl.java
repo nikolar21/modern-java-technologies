@@ -5,14 +5,11 @@ package com.project.mjt.repository.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.hibernate.annotations.Immutable;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,13 +24,17 @@ public class CarRepositoryImpl implements CarRepository {
 
     List<Car> allCars = new ArrayList<>();
 
+    ObjectMapper mapper = new ObjectMapper();
+
+    private static final String DATA_FILE_NAME = "src/main/resources/json/cars.json";
+
+    private static final String EXPORTED_DATA_FILE_NAME = "src/main/resources/json/cars_exported.json";
+
     public CarRepositoryImpl() throws IOException {
 
-        String DATA_FILE_NAME = "src/main/resources/json/cars.json";
         File dataFile = new File(DATA_FILE_NAME);
 
         // TODO: Refactor
-        ObjectMapper mapper = new ObjectMapper();
         List<Car> loadedCars = mapper.readValue(dataFile, new TypeReference<List<Car>>() {});
         Optional<Car> maxSerialNumberCar = loadedCars.stream().max(Comparator.comparing(Car::getSerialNumber));
         serialNumber = maxSerialNumberCar.get().getSerialNumber();
@@ -44,6 +45,11 @@ public class CarRepositoryImpl implements CarRepository {
     @Override
     public List<Car> getCars() {
         return allCars;
+    }
+
+    @Override
+    public Optional<Car> getCarBySerial(int serialNumber) {
+        return allCars.stream().filter(car -> car.getSerialNumber().equals(serialNumber)).findFirst();
     }
 
     @Override
@@ -69,5 +75,11 @@ public class CarRepositoryImpl implements CarRepository {
     @Override
     public int getSerialNumber() {
         return ++serialNumber;
+    }
+
+    @Override
+    public void saveJSON() throws IOException {
+        File dataFile = new File(EXPORTED_DATA_FILE_NAME);
+        mapper.writeValue(dataFile, allCars);
     }
 }

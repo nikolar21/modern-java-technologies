@@ -5,7 +5,9 @@ import com.project.mjt.exception.CarDeletionException;
 import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.exception.CarStoringException;
 import com.project.mjt.exception.CarUpdatingException;
+import com.project.mjt.exception.DataSaveException;
 import com.project.mjt.services.impl.CarServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import lombok.SneakyThrows;
 
 @RestController
 @RequestMapping("/cars")
+@CrossOrigin("http://localhost:4200/")
 public class CarsController {
 
     private final CarServiceImpl carService;
@@ -75,8 +78,15 @@ public class CarsController {
 
     @SneakyThrows
     @DeleteMapping("/{serialNumber}")
-    public void deleteCarById(@PathVariable("serialNumber") String serialNumber) {
-        carService.deleteCarById(serialNumber);
+    public ResponseEntity<CarDTO> deleteCarById(@PathVariable("serialNumber") String serialNumber) {
+        return new ResponseEntity<>(carService.deleteCarById(serialNumber), HttpStatus.OK);
+    }
+
+    @SneakyThrows
+    @PostMapping("/save")
+    public ResponseEntity saveData() {
+        carService.saveCarData();
+        return ResponseEntity.ok("Successfully saved data into JSON.");
     }
 
     // ------------------
@@ -106,6 +116,13 @@ public class CarsController {
 
     @ExceptionHandler(value = CarNotFoundException.class)
     private ResponseEntity<String> handleCarNotFoundException(CarNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = DataSaveException.class)
+    private ResponseEntity<String> handleDataSaveException(DataSaveException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());

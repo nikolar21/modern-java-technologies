@@ -1,6 +1,7 @@
 package com.project.mjt.services.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -15,9 +16,11 @@ import com.project.mjt.exception.CarDeletionException;
 import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.exception.CarStoringException;
 import com.project.mjt.exception.CarUpdatingException;
+import com.project.mjt.exception.DataSaveException;
 import com.project.mjt.models.Car;
 import com.project.mjt.repository.CarRepository;
 import com.project.mjt.services.CarService;
+import com.project.mjt.services.EuroLevelService;
 import com.project.mjt.services.utils.CarMapper;
 
 @Service
@@ -27,23 +30,13 @@ public class CarServiceImpl implements CarService {
 
     CarMapper carMapper;
 
+    EuroLevelService euroLevelService;
+
     @Autowired
-    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper) {
+    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper, EuroLevelService euroLevelService) {
         this.carRepository = carRepository;
         this.carMapper = carMapper;
-    }
-
-    @Override
-    public List<CarDTO> getAllCars() {
-
-        List<Car> cars = this.carRepository.getCars();
-
-        if (cars.size() == 0) {
-            return Collections.emptyList();
-        }
-
-        List<CarDTO> carsDTO = cars.stream().map(car -> carMapper.toDTO(car)).collect(Collectors.toList());
-        return carsDTO;
+        this.euroLevelService = euroLevelService;
     }
 
     @Override
@@ -51,6 +44,9 @@ public class CarServiceImpl implements CarService {
                                 String color) throws CarNotFoundException {
 
         List<Car> cars = carRepository.getCars();
+
+        if (cars.isEmpty())
+            return Collections.emptyList();
 
         if (serialNumber != null) {
             int serialNumberInt = Integer.parseInt(serialNumber);
@@ -105,6 +101,8 @@ public class CarServiceImpl implements CarService {
         car.setSerialNumber(carRepository.getSerialNumber());
         Car newCar = carMapper.toEntity(car);
 
+        euroLevelService.setEngineStandards(newCar);
+
         carRepository.createCar(newCar);
 
         try {
@@ -121,14 +119,14 @@ public class CarServiceImpl implements CarService {
         // TODO: Validate if number is in integer range
         int serialNumberInt = Integer.parseInt(serialNumber);
 
-        getCarBySerialNumber(serialNumberInt);
+        CarDTO carToBeUpdated = getCarBySerialNumber(serialNumberInt);
+        carUpdateDTO.setSerialNumber(carToBeUpdated.getSerialNumber());
 
         Car carUpdate = carMapper.toEntity(carUpdateDTO);
 
         carRepository.updateCar(carUpdate);
 
         CarDTO updatedCar = getCarBySerialNumber(serialNumberInt);
-
         if (!updatedCar.equals(carUpdateDTO)) {
             throw new CarUpdatingException(
                 String.format("Error occurred while trying to update car with serial number %d.", serialNumberInt));
@@ -142,17 +140,23 @@ public class CarServiceImpl implements CarService {
 
         int serialNumberInt = Integer.parseInt(serialNumber);
 
-        CarDTO carToBeDeleted = getCarBySerialNumber(serialNumberInt);
+        Optional<Car> carToBeDeleted = carRepository.getCarBySerial(serialNumberInt);
 
-        carRepository.deleteCar(carMapper.toEntity(carToBeDeleted));
+        if (carToBeDeleted.isEmpty())
+            throw new CarNotFoundException(
+                    String.format("Car with serial number %d could not be found.", serialNumberInt));
 
+        carRepository.deleteCar(carToBeDeleted.get());
+
+        return carMapper.toDTO(carToBeDeleted.get());
+    }
+
+    @Override
+    public void saveCarData() throws DataSaveException {
         try {
-            getCarBySerialNumber(serialNumberInt);
-        } catch (CarNotFoundException e) {
-            throw new CarDeletionException(
-                    String.format("Error occurred while trying to delete car with serial number %d.", serialNumberInt));
+            carRepository.saveJSON();
+        } catch (IOException e) {
+            throw new DataSaveException("Could not save data to JSON file.");
         }
-
-        return carToBeDeleted;
     }
 }

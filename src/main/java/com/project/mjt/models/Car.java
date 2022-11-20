@@ -11,11 +11,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.project.mjt.services.EuroLevelService;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Delegate;
 
 @Entity
 @Data
@@ -44,23 +49,14 @@ public class Car implements Serializable {
 
     String color;
 
-    @Column(length = 17, name = "VIN", unique = true, nullable = true)
-    String engineVINNumber;
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Engine implements Serializable {
+        private String name;
+        private EngineType type;
+        EuroLevelService.EuroLevel euroLevel;
+    }
 
-    String engine;
-
-    // TODO: Decide on 'engine' var type
-
-    //    private enum EngineType {
-    //        DIESEL, PETROL, ELECTRIC
-    //    }
-
-    // @Value
-    // private static class Engine {
-    //     private EngineType type;
-    //     private int power;
-    //     private int torque;
-    //     private String name;
-    //     private int displacement;
-    // }
+    Engine engine;
 }
