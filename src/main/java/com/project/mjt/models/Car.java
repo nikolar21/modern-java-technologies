@@ -17,10 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Delegate;
 
 @Entity
 @Data
@@ -46,8 +43,6 @@ public class Car implements Serializable {
 
     @Column(length = 4)
     Integer year;
-
-    String color;
 
     @Data
     @NoArgsConstructor

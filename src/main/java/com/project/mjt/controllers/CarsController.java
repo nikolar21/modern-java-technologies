@@ -46,16 +46,14 @@ public class CarsController {
             @RequestParam(required = false) String model,
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String afterYear,
-            @RequestParam(required = false) String beforeYear,
-            @RequestParam(required = false) String color
+            @RequestParam(required = false) String beforeYear
     ) {
         return ResponseEntity.ok(carService.getCars(
                 serialNumber,
                 model,
                 brand,
                 afterYear,
-                beforeYear,
-                color
+                beforeYear
         ));
     }
 

@@ -38,8 +38,8 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarDTO> getCars(String serialNumber, String model, String brand, String afterYear, String beforeYear,
-                                String color) throws CarNotFoundException {
+    public List<CarDTO> getCars(String serialNumber, String model, String brand, String afterYear, String beforeYear)
+            throws CarNotFoundException {
 
         List<Car> cars = carRepository.getCars();
 
@@ -70,9 +70,6 @@ public class CarServiceImpl implements CarService {
         if (beforeYear != null && !beforeYear.isBlank()) {
             int beforeYearInt = Integer.parseInt(beforeYear);
             cars = cars.stream().filter(car -> car.getYear() <= beforeYearInt).collect(Collectors.toList());
-        }
-        if (color != null && !color.isBlank()) {
-            cars = cars.stream().filter(car -> car.getColor().equalsIgnoreCase(color)).collect(Collectors.toList());
         }
 
         if (cars.isEmpty())

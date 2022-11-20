@@ -18,8 +18,7 @@ public interface CarService {
                          String model,
                          String brand,
                          String afterYear,
-                         String beforeYear,
-                         String color) throws CarNotFoundException;
+                         String beforeYear) throws CarNotFoundException;
 
     CarDTO getCarBySerialNumber(int serialNumber) throws CarNotFoundException;
 
