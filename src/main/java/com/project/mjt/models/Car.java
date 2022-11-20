@@ -59,4 +59,8 @@ public class Car implements Serializable {
     }
 
     Engine engine;
+
+    float price;
+
+    float expectedTaxRate;
 }

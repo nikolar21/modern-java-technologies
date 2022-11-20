@@ -13,4 +13,5 @@ public class CarDTO {
     private String model;
     private int year;
     private String engine;
+    private float price;
 }

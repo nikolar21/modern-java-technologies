@@ -19,6 +19,7 @@ import com.project.mjt.models.Car;
 import com.project.mjt.repository.CarRepository;
 import com.project.mjt.services.CarService;
 import com.project.mjt.services.EuroLevelService;
+import com.project.mjt.services.TaxCalculatorService;
 import com.project.mjt.services.utils.CarMapper;
 
 @Service
@@ -30,11 +31,15 @@ public class CarServiceImpl implements CarService {
 
     EuroLevelService euroLevelService;
 
+    TaxCalculatorService taxCalculatorService;
+
     @Autowired
-    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper, EuroLevelService euroLevelService) {
+    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper, EuroLevelService euroLevelService,
+                          TaxCalculatorService taxCalculatorService) {
         this.carRepository = carRepository;
         this.carMapper = carMapper;
         this.euroLevelService = euroLevelService;
+        this.taxCalculatorService = taxCalculatorService;
     }
 
     @Override
@@ -102,6 +107,8 @@ public class CarServiceImpl implements CarService {
 
         // Map DTO object from the controller to an entity object
         Car newCar = carMapper.toEntity(car);
+
+        taxCalculatorService.setTaxBracket(newCar);
 
         euroLevelService.setEngineStandards(newCar);
 

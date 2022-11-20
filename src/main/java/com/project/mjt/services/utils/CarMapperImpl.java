@@ -19,7 +19,8 @@ public class CarMapperImpl implements CarMapper {
                 car.getBrand(),
                 car.getModel(),
                 car.getYear(),
-                car.getEngine().getName());
+                car.getEngine().getName(),
+                car.getPrice());
     }
 
     @Override
@@ -30,6 +31,7 @@ public class CarMapperImpl implements CarMapper {
                 .brand(car.getBrand())
                 .model(car.getModel())
                 .year(car.getYear())
+                .price(car.getPrice())
                 .build();
     }
 }
