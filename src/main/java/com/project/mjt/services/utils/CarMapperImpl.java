@@ -25,7 +25,9 @@ public class CarMapperImpl implements CarMapper {
     @Override
     public Car toEntity(CarDTO car) {
         return Car.builder()
-                .engine(new Car.Engine(car.getEngine(), null, null))
+                .engine(
+                        new Car.Engine(car.getEngine())
+                )
                 .serialNumber(car.getSerialNumber())
                 .brand(car.getBrand())
                 .model(car.getModel())

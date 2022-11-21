@@ -16,7 +16,6 @@ import com.project.mjt.services.EuroLevelService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -24,25 +23,24 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class Car implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
-    Long id;
+    private Long id;
 
     @Column(nullable = false, updatable = false, unique = true)
-    Integer serialNumber;
+    private Integer serialNumber;
 
     @Column(nullable = false)
-    String brand;
+    private String brand;
 
     @Column(nullable = false)
-    String model;
+    private String model;
 
     @Column(length = 4)
-    Integer year;
+    private Integer year;
 
     @Data
     @NoArgsConstructor
@@ -50,8 +48,12 @@ public class Car implements Serializable {
     public static class Engine implements Serializable {
         private String name;
         private EngineType type;
-        EuroLevelService.EuroLevel euroLevel;
+        private EuroLevelService.EuroLevel euroLevel;
+
+        public Engine(String name) {
+            this.name = name;
+        }
     }
 
-    Engine engine;
+    private Engine engine;
 }

@@ -8,9 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class CarDTO {
-    private int serialNumber;
+
+    private Integer serialNumber;
     private String brand;
     private String model;
-    private int year;
+    private Integer year;
     private String engine;
 }

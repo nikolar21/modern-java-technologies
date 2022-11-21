@@ -86,7 +86,7 @@ public class CarServiceImpl implements CarService {
         Optional<Car> foundCar = carRepository.getCarBySerial(serialNumber);
 
         if (foundCar.isEmpty())
-            throw new CarNotFoundException(serialNumber);
+            throw new CarNotFoundException(String.format("Car with serial number %d could not be found.", serialNumber));
 
         return carMapper.toDTO(foundCar.get());
     }
@@ -95,7 +95,7 @@ public class CarServiceImpl implements CarService {
     public CarDTO addNewCar(CarDTO car) throws CarStoringException {
 
         // Retrieve serial number from the repository, which is responsible for keeping track of the serial number
-        car.setSerialNumber(carRepository.getSerialNumber());
+        car.setSerialNumber(carRepository.generateSerialNumber());
 
         // Map DTO object from the controller to an entity object
         Car newCar = carMapper.toEntity(car);
@@ -121,7 +121,7 @@ public class CarServiceImpl implements CarService {
         // Validate that car is available
         Optional<Car> carToBeUpdated = carRepository.getCarBySerial(serialNumberInt);
         if (carToBeUpdated.isEmpty())
-            throw new CarNotFoundException(serialNumberInt);
+            throw new CarNotFoundException(String.format("Car with serial number %d could not be found.", serialNumberInt));
 
         // Map front-end DTO object to entity
         Car carUpdate = carMapper.toEntity(carUpdateDTO);
@@ -155,6 +155,10 @@ public class CarServiceImpl implements CarService {
                     String.format("Car with serial number %d could not be found.", serialNumberInt));
 
         carRepository.deleteCar(carToBeDeleted.get());
+
+        if (carRepository.getCarBySerial(serialNumberInt).isPresent()) {
+            throw new CarDeletionException(String.format("Cannot delete car with serial number %d.", serialNumberInt));
+        }
 
         return carMapper.toDTO(carToBeDeleted.get());
     }

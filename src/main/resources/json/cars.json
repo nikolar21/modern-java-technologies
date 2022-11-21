@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "serialNumber": 1000001,
     "brand": "Mercedes",
     "model": "ML320",
@@ -12,7 +11,6 @@
     }
   },
   {
-    "id": null,
     "serialNumber": 1000002,
     "brand": "Peugeot",
     "model": "407",
@@ -24,7 +22,6 @@
     }
   },
   {
-    "id": null,
     "serialNumber": 1000003,
     "brand": "VW",
     "model": "Passat",

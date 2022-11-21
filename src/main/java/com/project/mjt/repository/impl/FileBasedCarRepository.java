@@ -19,7 +19,7 @@ import com.project.mjt.models.Car;
 import com.project.mjt.repository.CarRepository;
 
 @Repository
-public class CarRepositoryImpl implements CarRepository {
+public class FileBasedCarRepository implements CarRepository {
 
     private int serialNumber = 1000000;
 
@@ -31,7 +31,7 @@ public class CarRepositoryImpl implements CarRepository {
 
     private static final String EXPORTED_DATA_FILE_NAME = "src/main/resources/json/cars_exported.json";
 
-    public CarRepositoryImpl() throws IOException {
+    public FileBasedCarRepository() throws IOException {
 
         loadData();
     }
@@ -56,7 +56,7 @@ public class CarRepositoryImpl implements CarRepository {
 
         Optional<Car> carToUpdate = getCarBySerial(serial);
         if (carToUpdate.isEmpty())
-            throw new CarNotFoundException(serial);
+            throw new CarNotFoundException(String.format("Car with serial number %d could not be found.", serialNumber));
 
         int indexOfCarToUpdate = allCars.indexOf(carToUpdate.get());
         allCars.set(indexOfCarToUpdate, carUpdate);
@@ -67,26 +67,43 @@ public class CarRepositoryImpl implements CarRepository {
         allCars.remove(car);
     }
 
+    /**
+     * Generate a serial number for a new car.
+     */
     @Override
-    public int getSerialNumber() {
+    public int generateSerialNumber() {
         return ++serialNumber;
     }
 
 
-
+    /**
+     * Saves the data in a JSON structured data file.
+     */
     @Override
     public void saveData() throws IOException {
         File dataFile = new File(EXPORTED_DATA_FILE_NAME);
         mapper.writeValue(dataFile, allCars);
     }
 
+    /**
+     * Loads the data from a JSON file and maps to a list of the entity object 'Car'
+     */
     private void loadData() throws IOException {
 
         File dataFile = new File(DATA_FILE_NAME);
+
         List<Car> loadedCars = mapper.readValue(dataFile, new TypeReference<List<Car>>() {});
-        Optional<Car> maxSerialNumberCar = loadedCars.stream().max(Comparator.comparing(Car::getSerialNumber));
-        serialNumber = maxSerialNumberCar.get().getSerialNumber();
+
+        setStartingSerialNumber(loadedCars);
 
         allCars.addAll(loadedCars);
+    }
+
+    /**
+     * Sets the starting serial number depending on the highest serial number stored in the data file.
+     */
+    private void setStartingSerialNumber(List<Car> cars) {
+        Optional<Car> maxSerialNumberCar = cars.stream().max(Comparator.comparing(Car::getSerialNumber));
+        serialNumber = maxSerialNumberCar.get().getSerialNumber();
     }
 }

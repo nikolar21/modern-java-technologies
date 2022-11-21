@@ -86,6 +86,13 @@ public class CarsController {
     // EXCEPTION HANDLERS
     // ------------------
 
+    @ExceptionHandler(value = CarNotFoundException.class)
+    private ResponseEntity<String> handleCarNotFoundException(CarNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(value = CarDeletionException.class)
     private ResponseEntity<String> handleCarDeletionException(CarDeletionException e) {
         return ResponseEntity
@@ -104,13 +111,6 @@ public class CarsController {
     private ResponseEntity<String> handleCarStoringException(CarStoringException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(value = CarNotFoundException.class)
-    private ResponseEntity<String> handleCarNotFoundException(CarNotFoundException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 

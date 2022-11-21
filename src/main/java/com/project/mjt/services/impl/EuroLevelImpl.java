@@ -6,8 +6,6 @@ package com.project.mjt.services.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import com.project.mjt.models.Car;
@@ -15,13 +13,13 @@ import com.project.mjt.models.EngineType;
 import com.project.mjt.services.EuroLevelService;
 
 @Service
-public class EuropeanEuroLevel implements EuroLevelService {
+public class EuroLevelImpl implements EuroLevelService {
 
-    private static final Pattern dieselPattern = Pattern.compile("^([0-9]\\.[0-9]*d)|(.*?(TDI|HDI|CDI|DTI|BlueHDI|Bluemotion|DTHI|GTD|d|D).*)$");
+    private static final Pattern dieselPattern =
+            Pattern.compile("^([0-9]\\.[0-9]*d)|(.*?(TDI|HDI|CDI|DTI|BlueHDI|Bluemotion|DTHI|GTD|d|D).*)$");
     private static final Pattern electricPattern = Pattern.compile("^.*kWh.*$");
     private static final Pattern hybridPattern = Pattern.compile("^.*hybrid.*$");
 
-    // TODO
     @Override
     public void setEngineStandards(Car car) {
 
@@ -31,48 +29,48 @@ public class EuropeanEuroLevel implements EuroLevelService {
 
     private void setEngineType(Car.Engine engine) {
 
-        if (engine.getName() == null)
+        if (engine.getName() == null) {
             engine.setType(EngineType.UNKNOWN);
+            return;
+        }
 
         if (isEngineType(hybridPattern, engine.getName().toLowerCase())) {
             engine.setType(EngineType.HYBRID);
-        }
-        else if (isEngineType(electricPattern, engine.getName())) {
+        } else if (isEngineType(electricPattern, engine.getName())) {
             engine.setType(EngineType.ELECTRIC);
-        }
-        else if (isEngineType(dieselPattern, engine.getName())) {
+        } else if (isEngineType(dieselPattern, engine.getName())) {
             engine.setType(EngineType.DIESEL);
-        }
-        else {
+        } else {
             engine.setType(EngineType.PETROL);
         }
     }
 
-    private void setEuroLevel(Car.Engine engine, int manufactureYear) {
+    private void setEuroLevel(Car.Engine engine, Integer manufactureYear) {
 
         EngineType engineType = engine.getType();
+
+        if (manufactureYear == null) {
+            engine.setEuroLevel(EuroLevel.UNKNOWN);
+            return;
+        }
 
         if (engineType == EngineType.ELECTRIC ||
             engineType == EngineType.UNKNOWN) {
             engine.setEuroLevel(EuroLevel.NONE);
+            return;
         }
 
         if (isBetween(1993, 1997, manufactureYear)) {
             engine.setEuroLevel(EuroLevel.EURO_1);
-        }
-        if (isBetween(1997, 2001, manufactureYear)) {
+        } else if (isBetween(1997, 2001, manufactureYear)) {
             engine.setEuroLevel(EuroLevel.EURO_2);
-        }
-        if (isBetween(2001, 2006, manufactureYear)) {
+        } else if (isBetween(2001, 2006, manufactureYear)) {
             engine.setEuroLevel(EuroLevel.EURO_3);
-        }
-        if (isBetween(2006, 2011, manufactureYear)) {
+        } else if (isBetween(2006, 2011, manufactureYear)) {
             engine.setEuroLevel(EuroLevel.EURO_4);
-        }
-        if (isBetween(2011, 2015, manufactureYear)) {
+        } else if (isBetween(2011, 2015, manufactureYear)) {
             engine.setEuroLevel(EuroLevel.EURO_5);
-        }
-        if (isBetween(2015, 2025, manufactureYear)) {
+        } else if (isBetween(2015, 2025, manufactureYear)) {
             engine.setEuroLevel(EuroLevel.EURO_6);
         }
     }
