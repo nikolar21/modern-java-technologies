@@ -1,6 +1,7 @@
 package com.project.mjt.services.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +75,8 @@ public class CarServiceImpl implements CarService {
 
         if (cars.isEmpty())
             throw new CarNotFoundException("No cars were found with the given parameters.");
+
+        List<CarDTO> carDTOs = new ArrayList<>();
 
         return cars.stream()
                 .map(carMapper::toDTO)
