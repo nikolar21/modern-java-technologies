@@ -1,23 +1,46 @@
 [
   {
     "serialNumber": 1000001,
-    "brand": "Mercedes",
-    "model": "ML320",
-    "year": 2015,
-    "engine": "3.0 224hp"
+    "brand": "BMW",
+    "model": "530d",
+    "year": 2019,
+    "engine": {
+      "name": "3.0d 286hp",
+      "type": "DIESEL",
+      "euroLevel": "EURO_6"
+    }
   },
   {
     "serialNumber": 1000002,
     "brand": "Peugeot",
     "model": "407",
     "year": 2008,
-    "engine": "2.2 HDi"
+    "engine": {
+      "name": "2.2 HDi 170hp",
+      "type": "DIESEL",
+      "euroLevel": "EURO_4"
+    }
   },
   {
     "serialNumber": 1000003,
     "brand": "VW",
     "model": "Passat",
-    "year": 2008,
-    "engine": "2.0 TDI"
+    "year": 2004,
+    "engine": {
+      "name": "2.0 TDI 140hp",
+      "type": "DIESEL",
+      "euroLevel": "EURO_4"
+    }
+  },
+  {
+    "serialNumber": 1000004,
+    "brand": "Mercedes",
+    "model": "ML320",
+    "year": 2015,
+    "engine": {
+      "name": "3.0 224hp",
+      "type": "DIESEL",
+      "euroLevel": "EURO_5"
+    }
   }
 ]

@@ -19,13 +19,15 @@ public class CarMapperImpl implements CarMapper {
                 car.getBrand(),
                 car.getModel(),
                 car.getYear(),
-                car.getEngine());
+                car.getEngine().getName());
     }
 
     @Override
     public Car toEntity(CarDTO car) {
         return Car.builder()
-                .engine(car.getEngine())
+                .engine(
+                        new Car.Engine(car.getEngine())
+                )
                 .serialNumber(car.getSerialNumber())
                 .brand(car.getBrand())
                 .model(car.getModel())

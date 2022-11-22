@@ -5,24 +5,20 @@ package com.project.mjt.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.project.mjt.dto.CarDTO;
 import com.project.mjt.exception.CarDeletionException;
 import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.exception.CarStoringException;
 import com.project.mjt.exception.CarUpdatingException;
+import com.project.mjt.exception.DataSaveException;
 
 public interface CarService {
-
-    List<CarDTO> getAllCars();
 
     List<CarDTO> getCars(String serialNumber,
                          String model,
                          String brand,
                          String afterYear,
-                         String beforeYear,
-                         String color) throws CarNotFoundException;
+                         String beforeYear) throws CarNotFoundException;
 
     CarDTO getCarBySerialNumber(int serialNumber) throws CarNotFoundException;
 
@@ -31,4 +27,6 @@ public interface CarService {
     CarDTO updateCar(String serialNumber, CarDTO carUpdateDTO) throws CarNotFoundException, CarUpdatingException;
 
     CarDTO deleteCarById(String serialNumber) throws CarNotFoundException, CarDeletionException;
+
+    void saveCarData() throws DataSaveException;
 }
