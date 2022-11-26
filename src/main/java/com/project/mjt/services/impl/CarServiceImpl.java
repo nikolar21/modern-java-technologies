@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.project.mjt.dto.CarDTO;
@@ -25,6 +26,7 @@ import com.project.mjt.services.utils.CarMapper;
 @Service
 public class CarServiceImpl implements CarService {
 
+    @Qualifier("CarRepositoryJPA")
     CarRepository carRepository;
 
     CarMapper carMapper;

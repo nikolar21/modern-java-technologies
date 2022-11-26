@@ -18,7 +18,7 @@ import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.models.Car;
 import com.project.mjt.repository.CarRepository;
 
-@Repository
+@Repository("test")
 public class FileBasedCarRepository implements CarRepository {
 
     private int serialNumber = 1000000;

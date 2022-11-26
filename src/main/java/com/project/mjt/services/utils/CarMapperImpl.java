@@ -3,6 +3,7 @@
  */
 package com.project.mjt.services.utils;
 
+import com.project.mjt.models.Engine;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class CarMapperImpl implements CarMapper {
     public Car toEntity(CarDTO car) {
         return Car.builder()
                 .engine(
-                        new Car.Engine(car.getEngine())
+                        new Engine(car.getEngine())
                 )
                 .serialNumber(car.getSerialNumber())
                 .brand(car.getBrand())

@@ -5,56 +5,29 @@ package com.project.mjt.models;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import com.project.mjt.services.EuroLevelService;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import static com.project.mjt.repository.constrains.NamedQueryConstrains.FIND_ALL_CARS;
 
 @Entity
-@Data
-@Builder
+@SuperBuilder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Car implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
-    private Long id;
+@NamedQueries({
+        @NamedQuery(name = FIND_ALL_CARS, query = "SELECT c FROM Car c"),
+})
+public class Car extends Vehicle implements Serializable {
 
     @Column(nullable = false, updatable = false, unique = true)
     private Integer serialNumber;
 
-    @Column(nullable = false)
-    private String brand;
-
-    @Column(nullable = false)
-    private String model;
-
-    @Column(length = 4)
-    private Integer year;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Engine implements Serializable {
-        private String name;
-        private EngineType type;
-        private EuroLevelService.EuroLevel euroLevel;
-
-        public Engine(String name) {
-            this.name = name;
-        }
-    }
-
+    @ManyToOne
     private Engine engine;
 }

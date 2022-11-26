@@ -6,6 +6,7 @@ package com.project.mjt.services.impl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.project.mjt.models.Engine;
 import org.springframework.stereotype.Service;
 
 import com.project.mjt.models.Car;
@@ -27,7 +28,7 @@ public class EuroLevelImpl implements EuroLevelService {
         setEuroLevel(car.getEngine(), car.getYear());
     }
 
-    private void setEngineType(Car.Engine engine) {
+    private void setEngineType(Engine engine) {
 
         if (engine.getName() == null) {
             engine.setType(EngineType.UNKNOWN);
@@ -45,7 +46,7 @@ public class EuroLevelImpl implements EuroLevelService {
         }
     }
 
-    private void setEuroLevel(Car.Engine engine, Integer manufactureYear) {
+    private void setEuroLevel(Engine engine, Integer manufactureYear) {
 
         EngineType engineType = engine.getType();
 
