@@ -24,7 +24,7 @@ public class CarRepositoryEmImpl implements CarRepository {
     @PostConstruct
     private void postConstruct() {
         try {
-            Car singleResult = em.createQuery("SELECT c FROM Car c ORDER BY c.id", Car.class).setMaxResults(1).getSingleResult();
+            Car singleResult = em.createQuery("SELECT c FROM Car c ORDER BY c.serialNumber desc", Car.class).setMaxResults(1).getSingleResult();
             serialNumber = singleResult.getSerialNumber() + 1;
         } catch (NoResultException e) {
             serialNumber = 1000000;

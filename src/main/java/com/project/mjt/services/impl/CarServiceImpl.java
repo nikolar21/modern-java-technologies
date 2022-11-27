@@ -48,7 +48,8 @@ public class CarServiceImpl implements CarService {
         if (cars.isEmpty())
             return Collections.emptyList();
 
-        // TODO: Move filtering to the repository layer when a DB is implemented, to avoid unnecessary load on the
+        // TODO: Move filtering to the repository layer when a DB is implemented, to avoid
+        //  unnecessary load on the
         //       repository layer (and the database)
         if (serialNumber != null) {
             int serialNumberInt = Integer.parseInt(serialNumber);
