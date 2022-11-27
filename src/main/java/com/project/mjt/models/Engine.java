@@ -2,9 +2,10 @@ package com.project.mjt.models;
 
 import com.project.mjt.services.EuroLevelService;
 import lombok.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Entity
 @NoArgsConstructor
@@ -12,8 +13,12 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 public class Engine extends BaseEntity{
+
     private String name;
+
+    @Enumerated(EnumType.STRING)
     private EngineType type;
+
     private EuroLevelService.EuroLevel euroLevel;
 
     public Engine(String name) {

@@ -80,7 +80,7 @@ public class CarsController {
     @PostMapping("/save")
     public ResponseEntity saveData() {
         carService.saveCarData();
-        return ResponseEntity.ok("Successfully saved data into JSON.");
+        return ResponseEntity.ok("Successfully saved data.");
     }
 
     // ------------------

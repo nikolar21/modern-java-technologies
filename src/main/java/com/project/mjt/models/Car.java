@@ -28,6 +28,6 @@ public class Car extends Vehicle implements Serializable {
     @Column(nullable = false, updatable = false, unique = true)
     private Integer serialNumber;
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private Engine engine;
 }

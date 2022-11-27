@@ -26,7 +26,6 @@ import com.project.mjt.services.utils.CarMapper;
 @Service
 public class CarServiceImpl implements CarService {
 
-    @Qualifier("CarRepositoryJPA")
     CarRepository carRepository;
 
     CarMapper carMapper;
@@ -34,7 +33,7 @@ public class CarServiceImpl implements CarService {
     EuroLevelService euroLevelService;
 
     @Autowired
-    public CarServiceImpl(CarRepository carRepository, CarMapper carMapper, EuroLevelService euroLevelService) {
+    public CarServiceImpl(@Qualifier("CarRepositoryEM")CarRepository carRepository, CarMapper carMapper, EuroLevelService euroLevelService) {
         this.carRepository = carRepository;
         this.carMapper = carMapper;
         this.euroLevelService = euroLevelService;
@@ -134,7 +133,9 @@ public class CarServiceImpl implements CarService {
         // Validate that the client did not change the serial number
         carUpdate.setSerialNumber(carToBeUpdated.get().getSerialNumber());
 
-        euroLevelService.setEngineStandards(carUpdate);
+        if(carUpdate.getEngine() != null) {
+            euroLevelService.setEngineStandards(carUpdate);
+        }
 
         carRepository.updateCar(serialNumberInt, carUpdate);
 
