@@ -28,5 +28,4 @@ public interface CarService {
 
     CarDTO deleteCarById(String serialNumber) throws CarNotFoundException, CarDeletionException;
 
-    void saveCarData() throws DataSaveException;
 }

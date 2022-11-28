@@ -26,7 +26,7 @@ public class CarsController {
     private final CarService carService;
 
     @Autowired
-    public CarsController(CarService carService) {
+    public CarsController(@Qualifier("carServiceEM") CarService carService) {
         this.carService = carService;
     }
 
@@ -74,13 +74,6 @@ public class CarsController {
     @DeleteMapping("/{serialNumber}")
     public ResponseEntity<CarDTO> deleteCarById(@PathVariable("serialNumber") String serialNumber) {
         return new ResponseEntity<>(carService.deleteCarById(serialNumber), HttpStatus.OK);
-    }
-
-    @SneakyThrows
-    @PostMapping("/save")
-    public ResponseEntity saveData() {
-        carService.saveCarData();
-        return ResponseEntity.ok("Successfully saved data.");
     }
 
     // ------------------

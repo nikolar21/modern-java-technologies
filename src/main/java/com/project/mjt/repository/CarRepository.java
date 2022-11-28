@@ -22,7 +22,4 @@ public interface CarRepository {
 
     void deleteCar(Car car);
 
-    int generateSerialNumber();
-
-    void saveData() throws IOException;
 }

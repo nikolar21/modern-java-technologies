@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import com.project.mjt.dto.CarDTO;
 import com.project.mjt.models.Car;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class CarMapperImpl implements CarMapper {
 
@@ -34,5 +37,15 @@ public class CarMapperImpl implements CarMapper {
                 .model(car.getModel())
                 .year(car.getYear())
                 .build();
+    }
+
+    @Override
+    public List<CarDTO> toDTO(List<Car> car) {
+        return car.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Car> toEntity(List<CarDTO> car) {
+        return car.stream().map(this::toEntity).collect(Collectors.toList());
     }
 }

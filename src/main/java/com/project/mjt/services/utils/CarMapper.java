@@ -6,6 +6,8 @@ package com.project.mjt.services.utils;
 import com.project.mjt.dto.CarDTO;
 import com.project.mjt.models.Car;
 
+import java.util.List;
+
 public interface CarMapper {
 
     /**
@@ -18,4 +20,8 @@ public interface CarMapper {
      * Map the data recieved from the repository (from the
      */
     Car toEntity(CarDTO car);
+
+    List<CarDTO> toDTO(List<Car> car);
+
+    List<Car> toEntity(List<CarDTO> car);
 }

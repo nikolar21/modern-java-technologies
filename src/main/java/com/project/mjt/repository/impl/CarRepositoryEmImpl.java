@@ -10,26 +10,13 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import static com.project.mjt.repository.constrains.NamedQueryConstrains.FIND_ALL_CARS;
 
-@Repository("CarRepositoryEM")
+@Repository
 public class CarRepositoryEmImpl implements CarRepository {
-
-    private int serialNumber;
-
-    @PostConstruct
-    private void postConstruct() {
-        try {
-            Car singleResult = em.createQuery("SELECT c FROM Car c ORDER BY c.serialNumber desc", Car.class).setMaxResults(1).getSingleResult();
-            serialNumber = singleResult.getSerialNumber() + 1;
-        } catch (NoResultException e) {
-            serialNumber = 1000000;
-        }
-    }
 
     @PersistenceContext
     private EntityManager em;
@@ -79,13 +66,4 @@ public class CarRepositoryEmImpl implements CarRepository {
         carBySerial.ifPresent(value -> em.remove(value));
     }
 
-    @Override
-    public int generateSerialNumber() {
-        return ++serialNumber;
-    }
-
-    @Override
-    public void saveData() throws IOException {
-
-    }
 }
