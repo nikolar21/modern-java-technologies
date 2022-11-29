@@ -1,7 +1,6 @@
 package com.project.mjt.models;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,7 +13,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @SuperBuilder
 @AllArgsConstructor
-public class Vehicle extends BaseEntity {
+public class Vehicle extends BasicEntity {
 
     @Column(nullable = false)
     private String brand;

@@ -4,6 +4,7 @@
 package com.project.mjt.models;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -30,4 +31,8 @@ public class Car extends Vehicle implements Serializable {
 
     @ManyToOne(cascade=CascadeType.ALL)
     private Engine engine;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "racer_cars", joinColumns = @JoinColumn(name = "car_id"), inverseJoinColumns = @JoinColumn(name = "racer_id"))
+    Set<Racer> drivers;
 }

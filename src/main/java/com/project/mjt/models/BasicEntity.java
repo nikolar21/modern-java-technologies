@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BaseEntity {
+public class BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

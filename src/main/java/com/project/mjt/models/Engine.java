@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Engine extends BaseEntity{
+public class Engine extends BasicEntity {
 
     private String name;
 
@@ -25,4 +25,12 @@ public class Engine extends BaseEntity{
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "Engine{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", euroLevel=" + euroLevel +
+                '}';
+    }
 }
