@@ -10,7 +10,7 @@ import com.project.mjt.exception.CarDeletionException;
 import com.project.mjt.exception.CarNotFoundException;
 import com.project.mjt.exception.CarStoringException;
 import com.project.mjt.exception.CarUpdatingException;
-import com.project.mjt.exception.DataSaveException;
+import org.springframework.data.domain.Page;
 
 public interface CarService {
 
@@ -19,6 +19,8 @@ public interface CarService {
                          String brand,
                          String afterYear,
                          String beforeYear) throws CarNotFoundException;
+
+    List<CarDTO>  getCarsPagination(Integer page, Integer elementsInPage);
 
     CarDTO getCarBySerialNumber(int serialNumber) throws CarNotFoundException;
 

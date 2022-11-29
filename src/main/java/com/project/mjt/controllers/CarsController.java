@@ -10,6 +10,7 @@ import com.project.mjt.services.CarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,15 @@ public class CarsController {
                 afterYear,
                 beforeYear
         ));
+    }
+
+    @SneakyThrows
+    @GetMapping("/page")
+    public ResponseEntity<List<CarDTO>> getCarsPagination(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "2") Integer elementsInPage
+    ) {
+        return ResponseEntity.ok(carService.getCarsPagination(page, elementsInPage));
     }
 
     @SneakyThrows

@@ -4,7 +4,8 @@
 package com.project.mjt.services.utils;
 
 import com.project.mjt.models.Engine;
-import org.springframework.context.annotation.Conditional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import com.project.mjt.dto.CarDTO;
@@ -12,6 +13,7 @@ import com.project.mjt.models.Car;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class CarMapperImpl implements CarMapper {
@@ -39,13 +41,16 @@ public class CarMapperImpl implements CarMapper {
                 .build();
     }
 
-    @Override
-    public List<CarDTO> toDTO(List<Car> car) {
-        return car.stream().map(this::toDTO).collect(Collectors.toList());
+    public List<CarDTO> toListDTO(List<Car> car) {
+        return convertToList(car.stream());
     }
 
-    @Override
-    public List<Car> toEntity(List<CarDTO> car) {
-        return car.stream().map(this::toEntity).collect(Collectors.toList());
+    public List<CarDTO> toListDTO(Page<Car> car) {
+        return convertToList(car.stream());
     }
+
+    private List<CarDTO> convertToList (Stream<Car> stream){
+        return stream.map(this::toDTO).collect(Collectors.toList());
+    }
+
 }

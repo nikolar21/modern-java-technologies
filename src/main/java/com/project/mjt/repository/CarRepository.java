@@ -14,6 +14,8 @@ public interface CarRepository {
 
     List<Car> getCars();
 
+    List<Car> getCars(Integer page, Integer elementsInPage);
+
     Optional<Car> getCarBySerial(int serialNumber);
 
     void createCar(Car car);

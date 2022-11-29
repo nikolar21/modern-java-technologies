@@ -6,7 +6,6 @@ import com.project.mjt.repository.CarRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -24,6 +23,13 @@ public class CarRepositoryEmImpl implements CarRepository {
     @Override
     public List<Car> getCars() {
         return em.createNamedQuery(FIND_ALL_CARS, Car.class).getResultList();
+    }
+
+    @Override
+    public List<Car> getCars(Integer page, Integer elementsInPage) {
+        return em.createNamedQuery(FIND_ALL_CARS, Car.class)
+                .setFirstResult((page) * elementsInPage)
+                .setMaxResults(elementsInPage).getResultList();
     }
 
     @Override

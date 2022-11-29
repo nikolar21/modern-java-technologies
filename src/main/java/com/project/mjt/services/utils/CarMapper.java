@@ -5,6 +5,7 @@ package com.project.mjt.services.utils;
 
 import com.project.mjt.dto.CarDTO;
 import com.project.mjt.models.Car;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -21,7 +22,8 @@ public interface CarMapper {
      */
     Car toEntity(CarDTO car);
 
-    List<CarDTO> toDTO(List<Car> car);
+    List<CarDTO> toListDTO(List<Car> car);
 
-    List<Car> toEntity(List<CarDTO> car);
+    List<CarDTO> toListDTO(Page<Car> car);
+
 }
