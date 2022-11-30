@@ -9,6 +9,8 @@ import com.project.mjt.exception.DataSaveException;
 import com.project.mjt.services.CarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,7 @@ public class CarsController {
     private final CarService carService;
 
     @Autowired
-    public CarsController(CarService carService) {
+    public CarsController(@Qualifier("carServiceEM") CarService carService) {
         this.carService = carService;
     }
 
@@ -58,6 +60,15 @@ public class CarsController {
     }
 
     @SneakyThrows
+    @GetMapping("/page")
+    public ResponseEntity<List<CarDTO>> getCarsPagination(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "2") Integer elementsInPage
+    ) {
+        return ResponseEntity.ok(carService.getCarsPagination(page, elementsInPage));
+    }
+
+    @SneakyThrows
     @PostMapping()
     public ResponseEntity<CarDTO> addCar(@RequestBody() CarDTO car) {
         return new ResponseEntity<>(carService.addNewCar(car), HttpStatus.CREATED);
@@ -73,13 +84,6 @@ public class CarsController {
     @DeleteMapping("/{serialNumber}")
     public ResponseEntity<CarDTO> deleteCarById(@PathVariable("serialNumber") String serialNumber) {
         return new ResponseEntity<>(carService.deleteCarById(serialNumber), HttpStatus.OK);
-    }
-
-    @SneakyThrows
-    @PostMapping("/save")
-    public ResponseEntity saveData() {
-        carService.saveCarData();
-        return ResponseEntity.ok("Successfully saved data into JSON.");
     }
 
     // ------------------
