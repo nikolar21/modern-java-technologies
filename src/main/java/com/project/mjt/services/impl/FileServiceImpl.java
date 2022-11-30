@@ -46,6 +46,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileDTOResponse getFileByRacerEgn(String egn) throws FileNotFoundException {
         File file = fileRepository.getFileByRacerEgn(egn).orElseThrow(FileNotFoundException::new);
-        return modelMapper.map(file,FileDTOResponse.class);
+        return modelMapper.map(file, FileDTOResponse.class);
     }
 }
