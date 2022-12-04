@@ -54,17 +54,17 @@ public class CarServiceImplEM implements CarService {
         if (cars.isEmpty())
             return Collections.emptyList();
 
-        if (model != null && !model.isBlank()) {
+        if (model != null && !model.isEmpty()) {
             cars = cars.stream().filter(car -> car.getModel().equalsIgnoreCase(model)).collect(Collectors.toList());
         }
-        if (brand != null && !brand.isBlank()) {
+        if (brand != null && !brand.isEmpty()) {
             cars = cars.stream().filter(car -> car.getBrand().equalsIgnoreCase(brand)).collect(Collectors.toList());
         }
-        if (afterYear != null && !afterYear.isBlank()) {
+        if (afterYear != null && !afterYear.isEmpty()) {
             int afterYearInt = Integer.parseInt(afterYear);
             cars = cars.stream().filter(car -> car.getYear() >= afterYearInt).collect(Collectors.toList());
         }
-        if (beforeYear != null && !beforeYear.isBlank()) {
+        if (beforeYear != null && !beforeYear.isEmpty()) {
             int beforeYearInt = Integer.parseInt(beforeYear);
             cars = cars.stream().filter(car -> car.getYear() <= beforeYearInt).collect(Collectors.toList());
         }
@@ -96,7 +96,7 @@ public class CarServiceImplEM implements CarService {
 
         Optional<Car> foundCar = carRepository.getCarBySerial(serialNumber);
 
-        if (foundCar.isEmpty())
+        if (!foundCar.isPresent())
             throw new CarNotFoundException(String.format("Car with serial number %d could not be found.", serialNumber));
 
         return carMapper.toDTO(foundCar.get());
@@ -130,7 +130,7 @@ public class CarServiceImplEM implements CarService {
 
         // Validate that car is available
         Optional<Car> carToBeUpdated = carRepository.getCarBySerial(serialNumberInt);
-        if (carToBeUpdated.isEmpty())
+        if (!carToBeUpdated.isPresent())
             throw new CarNotFoundException(String.format("Car with serial number %d could not be found.", serialNumberInt));
 
         // Map front-end DTO object to entity
@@ -147,7 +147,7 @@ public class CarServiceImplEM implements CarService {
 
         // Validate that an update was performed correctly
         Optional<Car> updatedCar = carRepository.getCarBySerial(serialNumberInt);
-        if (updatedCar.isEmpty() || !updatedCar.get().equals(carUpdate)) {
+        if (!updatedCar.isPresent() || !updatedCar.get().equals(carUpdate)) {
             throw new CarUpdatingException(
                 String.format("Error occurred while trying to update car with serial number %d.", serialNumberInt));
         }
@@ -162,7 +162,7 @@ public class CarServiceImplEM implements CarService {
 
         Optional<Car> carToBeDeleted = carRepository.getCarBySerial(serialNumberInt);
 
-        if (carToBeDeleted.isEmpty())
+        if (!carToBeDeleted.isPresent())
             throw new CarNotFoundException(
                     String.format("Car with serial number %d could not be found.", serialNumberInt));
 

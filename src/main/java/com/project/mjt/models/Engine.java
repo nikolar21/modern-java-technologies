@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +22,9 @@ public class Engine extends BasicEntity {
     private EngineType type;
 
     private EuroLevelService.EuroLevel euroLevel;
+
+    @OneToMany(targetEntity =Car.class,mappedBy = "engine")
+    private List<Car> carList;
 
     public Engine(String name) {
         this.name = name;
